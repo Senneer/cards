@@ -4,55 +4,57 @@ var templateScript = $('#cardTemplate').html();
 
 var prevSet = null;
 
-function UpdateUrl(arr) {
-  var path = '';
-  $.each(arr, function (i, item) {
-    if (i !== 0) {
-      path += '%2F' + item.type;
-    } else {
-      path += item.type;
-    }
-  });
-  prevSet = history.state;
-  window.history.pushState(cards, '', path);
+function updateUrl(arr) {
+  if (history.pushState && location.protocol.match(/http/g)) {
+    var path = '';
+    $.each(arr, function (i, item) {
+      if (i !== 0) {
+        path += '%2F' + item.type;
+      } else {
+        path += item.type;
+      }
+    });
+    prevSet = history.state;
+    window.history.pushState(cards, '', path);
+  }
 }
 
-function AddCard(type) {
+function addCard(type) {
   cards.push({ 'type': type });
   $('.cards').append(template(cards[cards.length - 1]));
-  UpdateUrl(cards);
+  updateUrl(cards);
 }
 
-function RemoveCard(el, arr) {
+function removeCard(el, arr) {
   arr.pop();
   el.remove();
-  UpdateUrl(arr);
+  updateUrl(arr);
 }
 
 var template = Handlebars.compile(templateScript);
 $.each(cards, function (i) {
   $('.cards').append(template(cards[i]));
 });
-UpdateUrl(cards);
+updateUrl(cards);
 
 $('body').on('click', function (e) {
   if ($('.cards__item').length === 0) {
     if (e.shiftKey && e.altKey) {
-      AddCard('wide');
+      addCard('wide');
     } else if (e.shiftKey) {
-      AddCard('narrow');
+      addCard('narrow');
     }
   }
 });
 
 $(document).on('click', '.cards__item', function (e) {
   if (e.shiftKey && e.altKey) {
-    AddCard('wide');
+    addCard('wide');
   } else if (e.shiftKey) {
-    AddCard('narrow');
+    addCard('narrow');
   } else {
     var lastEl = $(this).parent().children().last();
-    RemoveCard(lastEl, cards);
+    removeCard(lastEl, cards);
   }
 });
 
