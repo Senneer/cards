@@ -7,8 +7,7 @@ var gulp = require('gulp'),
   csscomb = require('gulp-csscomb'),
   sass = require('gulp-sass'),
   flexbugs = require('postcss-flexbugs-fixes'),
-  babel = require('gulp-babel'),
-  handlebars = require('handlebars');
+  babel = require('gulp-babel');
 
 //connect
 gulp.task('connect', function() {
